@@ -1,0 +1,10 @@
+# Arquivos compilados do Java
+bin/
+
+# Configurações locais do Eclipse
+.settings/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
