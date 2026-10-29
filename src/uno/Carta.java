@@ -18,4 +18,7 @@ public class Carta {
     public String getValor() {
         return valor;
     }
+    public String mostrar() {
+        return cor + " - " + valor;
+    }
 }
