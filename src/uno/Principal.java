@@ -8,6 +8,7 @@ public class Principal {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
+
         JogoUno jogo = new JogoUno();
 
         boolean vezJogador = true;
@@ -17,7 +18,39 @@ public class Principal {
 
         while (partidaAtiva) {
 
+            // Verifica se alguém venceu.
+            if (jogo.jogadorVenceu()) {
+                System.out.println("\nParabéns! Você venceu!");
+                break;
+            }
+
+            if (jogo.maquinaVenceu()) {
+                System.out.println("\nA máquina venceu!");
+                break;
+            }
+
+            // Verifica se a partida terminou em empate.
+            if (jogo.jogoEmpatado()) {
+                System.out.println("\n===== EMPATE =====");
+                System.out.println(
+                    "O baralho acabou e nenhum jogador pode jogar."
+                );
+                break;
+            }
+
             if (vezJogador) {
+
+                // Se não houver jogada nem cartas para comprar.
+                if (!jogo.jogadorPodeJogar()
+                        && jogo.baralhoEstaVazio()) {
+
+                    System.out.println(
+                        "\nVocê não possui jogadas possíveis e o baralho acabou."
+                    );
+
+                    vezJogador = false;
+                    continue;
+                }
 
                 System.out.println("\n===== SUA VEZ =====");
 
@@ -35,7 +68,19 @@ public class Principal {
 
                 System.out.print("Sua escolha: ");
 
-                int escolha = scanner.nextInt();
+                // Lê a entrada como texto para evitar InputMismatchException.
+                String entrada = scanner.nextLine();
+
+                int escolha;
+
+                try {
+                    escolha = Integer.parseInt(entrada.trim());
+                } catch (NumberFormatException e) {
+                    System.out.println(
+                        "Entrada inválida! Digite um número inteiro."
+                    );
+                    continue;
+                }
 
                 if (escolha == -2) {
                     System.out.println("Você saiu do jogo.");
@@ -43,9 +88,17 @@ public class Principal {
                 }
 
                 if (escolha == -1) {
+
+                    if (jogo.baralhoEstaVazio()) {
+                        System.out.println(
+                            "Não há cartas disponíveis para comprar."
+                        );
+                        continue;
+                    }
+
                     jogo.comprarCarta();
 
-                    // Compra normal encerra o turno do jogador.
+                    // Compra normal encerra o turno.
                     vezJogador = false;
                     continue;
                 }
@@ -53,7 +106,9 @@ public class Principal {
                 boolean jogou = jogo.jogarCarta(escolha);
 
                 if (!jogou) {
-                    System.out.println("Jogada inválida! Tente novamente.");
+                    System.out.println(
+                        "Jogada inválida! Tente novamente."
+                    );
                     continue;
                 }
 
@@ -69,7 +124,13 @@ public class Principal {
                 System.out.println("Você jogou: "
                         + jogo.getCartaAtual().mostrar());
 
-                // Aplica o efeito antes de verificar o próximo turno.
+                // Verifica a vitória antes de aplicar os efeitos.
+                if (jogo.jogadorVenceu()) {
+                    System.out.println("\nParabéns! Você venceu!");
+                    break;
+                }
+
+                // Aplica os efeitos da carta.
                 if (jogo.devePularVez()) {
 
                     if (jogo.existePenalidade()) {
@@ -79,28 +140,24 @@ public class Principal {
                     jogo.finalizarPuloDeVez();
 
                     System.out.println(
-                            "A máquina perdeu a vez! Você joga novamente.");
+                        "A máquina perdeu a vez! Você joga novamente."
+                    );
 
-                    // Continua sendo a vez do jogador.
                     vezJogador = true;
 
                 } else {
                     vezJogador = false;
                 }
 
-                if (jogo.jogadorVenceu()) {
-                    System.out.println("\nParabéns! Você venceu!");
-                    partidaAtiva = false;
-                }
-
             } else {
 
+                // Vez da máquina.
                 jogo.jogarMaquina();
 
+                // Verifica se a máquina venceu.
                 if (jogo.maquinaVenceu()) {
                     System.out.println("\nA máquina venceu!");
-                    partidaAtiva = false;
-                    continue;
+                    break;
                 }
 
                 if (jogo.devePularVez()) {
@@ -112,26 +169,23 @@ public class Principal {
                     jogo.finalizarPuloDeVez();
 
                     System.out.println(
-                            "Você perdeu a vez! A máquina joga novamente.");
+                        "Você perdeu a vez! A máquina joga novamente."
+                    );
 
-                    // Continua sendo a vez da máquina.
                     vezJogador = false;
 
                 } else {
                     vezJogador = true;
                 }
-
-                if (jogo.jogadorVenceu()) {
-                    System.out.println("\nVocê venceu!");
-                    partidaAtiva = false;
-                }
             }
         }
 
         scanner.close();
+
         System.out.println("\n===== FIM DE JOGO =====");
     }
 
+    // Permite escolher a cor depois de jogar um coringa.
     private static void escolherCor(Scanner scanner, JogoUno jogo) {
 
         boolean corValida = false;
@@ -146,11 +200,23 @@ public class Principal {
 
             System.out.print("Sua escolha: ");
 
-            int opcao = scanner.nextInt();
+            String entrada = scanner.nextLine();
+
+            int opcao;
+
+            try {
+                opcao = Integer.parseInt(entrada.trim());
+            } catch (NumberFormatException e) {
+                System.out.println(
+                    "Entrada inválida! Digite um número de 1 a 4."
+                );
+                continue;
+            }
 
             String cor = "";
 
             switch (opcao) {
+
                 case 1:
                     cor = "Vermelho";
                     break;
