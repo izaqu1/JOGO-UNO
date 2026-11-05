@@ -1,0 +1,19 @@
+PROJETO UNO - JAVA 21
+
+Esta pasta contém os seis arquivos-fonte da entrega:
+- Carta.java
+- Baralho.java
+- Pilha.java
+- Jogo.java
+- Tela.java
+- Main.java
+
+Todos pertencem ao pacote uno.
+
+NO ECLIPSE:
+1. Abra o projeto Java.
+2. Dentro de src, crie ou utilize o pacote uno.
+3. Coloque os seis arquivos .java dentro do pacote uno.
+4. Execute Main.java como Java Application.
+
+A interface é feita com Swing e não exige bibliotecas externas.

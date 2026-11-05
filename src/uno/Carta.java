@@ -1,8 +1,6 @@
 package uno;
 
-
 public class Carta {
-
     private String cor;
     private String valor;
 
@@ -18,7 +16,11 @@ public class Carta {
     public String getValor() {
         return valor;
     }
+
     public String mostrar() {
+        if ("Sem cor".equals(cor)) {
+            return valor;
+        }
         return cor + " - " + valor;
     }
 }

@@ -1,89 +1,74 @@
-
 package uno;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Baralho {
-
-    private ArrayList<Carta> cartas;
+    private Carta[] cartas;
+    private int quantidade;
 
     public Baralho() {
-        cartas = new ArrayList<>();
+        cartas = new Carta[108];
+        quantidade = 0;
+        criarCartas();
+        embaralhar();
     }
 
-    // Adiciona uma carta ao baralho.
-    public void adicionarCarta(Carta carta) {
-
-        if (carta != null) {
-            cartas.add(carta);
-        }
-    }
-
-    // Mostra todas as cartas disponíveis.
-    public void mostrarCartas() {
-
-        for (Carta carta : cartas) {
-
-            System.out.println(
-                carta.getCor() + " - " + carta.getValor()
-            );
-        }
-    }
-
-    // Cria as 108 cartas do UNO.
-    public void criarCartas() {
-
-        String[] cores = {
-            "Vermelho", "Azul", "Verde", "Amarelo"
-        };
+    private void criarCartas() {
+        String[] cores = {"Vermelho", "Amarelo", "Verde", "Azul"};
 
         for (String cor : cores) {
+            adicionar(cor, "0");
 
-            // Uma carta de número 0 por cor.
-            cartas.add(new Carta(cor, "0"));
-
-            // Duas cartas de cada número de 1 a 9.
             for (int numero = 1; numero <= 9; numero++) {
-
-                cartas.add(new Carta(cor, String.valueOf(numero)));
-                cartas.add(new Carta(cor, String.valueOf(numero)));
+                adicionar(cor, String.valueOf(numero));
+                adicionar(cor, String.valueOf(numero));
             }
 
-            // Duas cartas de cada tipo de ação.
             for (int i = 0; i < 2; i++) {
-
-                cartas.add(new Carta(cor, "Bloqueio"));
-                cartas.add(new Carta(cor, "Inverter"));
-                cartas.add(new Carta(cor, "+2"));
+                adicionar(cor, "Bloqueio");
+                adicionar(cor, "Inverter");
+                adicionar(cor, "+2");
             }
         }
 
-        // Quatro coringas de cada tipo.
         for (int i = 0; i < 4; i++) {
-
-            cartas.add(new Carta("Sem cor", "Coringa"));
-            cartas.add(new Carta("Sem cor", "Coringa +4"));
+            adicionar("Sem cor", "Coringa");
+            adicionar("Sem cor", "Coringa +4");
         }
     }
 
-    // Embaralha as cartas.
-    public void embaralhar() {
-        Collections.shuffle(cartas);
+    public void adicionar(String cor, String valor) {
+        if (quantidade < cartas.length) {
+            cartas[quantidade] = new Carta(cor, valor);
+            quantidade++;
+        }
     }
 
-    // Compra uma carta do baralho.
-    public Carta comprarCarta() {
+    public void embaralhar() {
+        List<Carta> lista = new ArrayList<>();
+        for (int i = 0; i < quantidade; i++) {
+            lista.add(cartas[i]);
+        }
+        Collections.shuffle(lista);
+        for (int i = 0; i < quantidade; i++) {
+            cartas[i] = lista.get(i);
+        }
+    }
 
-        if (cartas.isEmpty()) {
+    public Carta comprar() {
+        if (quantidade == 0) {
             return null;
         }
 
-        return cartas.remove(0);
+        Carta carta = cartas[quantidade - 1];
+        cartas[quantidade - 1] = null;
+        quantidade--;
+        return carta;
     }
 
-    // Retorna a quantidade de cartas disponíveis.
-    public int quantidadeCartas() {
-        return cartas.size();
+    public int getQuantidade() {
+        return quantidade;
     }
 }
